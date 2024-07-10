@@ -16,6 +16,7 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/util/sets"
 
+	health "github.com/cilium/cilium/cilium-health/launch"
 	"github.com/cilium/cilium/pkg/controller"
 	"github.com/cilium/cilium/pkg/endpoint"
 	"github.com/cilium/cilium/pkg/ipam"
@@ -82,6 +83,8 @@ func (d *Daemon) validateEndpoint(ep *endpoint.Endpoint) (valid bool, err error)
 		if err := os.RemoveAll(healthStateDir); err != nil {
 			scopedLog.Warning("Cannot clean up old health state directory")
 		}
+		// Remove health related devices if they still exist
+		health.CleanupEndpoint()
 		return false, nil
 	}
 

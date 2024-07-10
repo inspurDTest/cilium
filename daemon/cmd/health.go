@@ -147,5 +147,4 @@ func (d *Daemon) cleanupHealthEndpoint() {
 			log.WithError(err).Debug("Error occurred while deleting cilium-health endpoint")
 		}
 	}
-	health.CleanupEndpoint()
 }
