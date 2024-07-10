@@ -57,7 +57,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  cilium_cli_ci_version:
+  cilium_cli_ci_version: 0ae9f7730d518a68522c7c9c53d6faff5e193a91@sha256:d1856823ddd0ce8cc451060f1d04588b38dba2339fc04046d163d3106f66fc2e # https://github.com/cilium/cilium-cli/pull/2670
 
 jobs:
   echo-inputs:
