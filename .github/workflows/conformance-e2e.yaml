@@ -120,13 +120,14 @@ jobs:
             # renovate: datasource=docker depName=quay.io/lvh-images/kind
             kernel: '5.10-20240703.151759'
             kube-proxy: 'iptables'
-            kpr: 'true'
+            kpr: 'false'
             devices: '{eth0,eth1}'
             secondary-network: 'true'
             tunnel: 'vxlan'
             lb-mode: 'snat'
             endpoint-routes: 'true'
             egress-gateway: 'true'
+            misc: 'socketLB.enabled=false,nodePort.enabled=true'
 
           - name: '5'
             # renovate: datasource=docker depName=quay.io/lvh-images/kind
