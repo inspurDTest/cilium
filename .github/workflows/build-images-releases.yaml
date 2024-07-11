@@ -5,7 +5,6 @@ on:
     tags:
       - v1.14.[0-9]+
       - v1.14.[0-9]+-rc.[0-9]+
-
 permissions:
   # To be able to access the repository with `actions/checkout`
   contents: read
