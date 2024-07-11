@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: cilium
-            dockerfile: ./images/cilium/Dockerfile
+          - name: cilium-wyd
+            dockerfile: ./images/cilium-wyd/Dockerfile
 
           - name: operator
             dockerfile: ./images/operator/Dockerfile
@@ -43,7 +43,7 @@ jobs:
             dockerfile: ./images/kvstoremesh/Dockerfile
 
           - name: docker-plugin
-            dockerfile: ./images/cilium-docker-plugin/Dockerfile
+            dockerfile: ./images/cilium-wyd-docker-plugin/Dockerfile
 
     steps:
       - name: Checkout main branch to access local actions
@@ -92,8 +92,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            registry.cn-hangzhou.aliyuncs.com/testwydimage/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
-            registry.cn-hangzhou.aliyuncs.com/testwydimage/${{ matrix.name }}:stable
+            registry.cn-hangzhou.aliyuncs.com/cilium-wyd/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
+            registry.cn-hangzhou.aliyuncs.com/cilium-wyd/${{ matrix.name }}:stable
           target: release
           build-args: |
             OPERATOR_VARIANT=${{ matrix.name }}
