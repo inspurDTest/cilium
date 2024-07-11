@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: cilium-wyd
-            dockerfile: ./images/cilium-wyd/Dockerfile
+          - name: cilium
+            dockerfile: ./images/cilium/Dockerfile
 
           - name: operator
             dockerfile: ./images/operator/Dockerfile
@@ -43,7 +43,7 @@ jobs:
             dockerfile: ./images/kvstoremesh/Dockerfile
 
           - name: docker-plugin
-            dockerfile: ./images/cilium-wyd-docker-plugin/Dockerfile
+            dockerfile: ./images/cilium-docker-plugin/Dockerfile
 
     steps:
       - name: Checkout main branch to access local actions
