@@ -362,6 +362,7 @@ func setupLogging(n *types.NetConf) error {
 }
 
 func cmdAdd(args *skel.CmdArgs) (err error) {
+
 	n, err := types.LoadNetConf(args.StdinData)
 	if err != nil {
 		return fmt.Errorf("unable to parse CNI configuration \"%s\": %s", args.StdinData, err)
@@ -380,6 +381,7 @@ func cmdAdd(args *skel.CmdArgs) (err error) {
 			defer gops.Close()
 		}
 	}
+	logger.Debugf("This is a test message,###############")
 	logger.Debugf("Processing CNI ADD request %#v", args)
 
 	logger.Debugf("CNI NetConf: %#v", n)

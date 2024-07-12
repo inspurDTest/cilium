@@ -31,6 +31,7 @@ import (
 	"github.com/cilium/cilium/pkg/node"
 	"github.com/cilium/cilium/pkg/option"
 	wgTypes "github.com/cilium/cilium/pkg/wireguard/types"
+	"github.com/containernetworking/plugins/pkg/ns"
 )
 
 const (
@@ -322,7 +323,55 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 			return err
 		}
 	} else {
-		progs := []progDefinition{{progName: symbolFromEndpoint, direction: dirIngress}}
+		var netNS ns.NetNS
+		var err error
+		if ep.NetNS() != "" {
+			netNS, err = ns.GetNS(ep.NetNS())
+			if err != nil {
+				return fmt.Errorf("failed to open netns %q: %s", ep.NetNS(), err)
+			}
+		} else {
+			netNS, err = ns.GetCurrentNS()
+			if err != nil {
+				return fmt.Errorf("failed to open current netns: %s", err)
+			}
+		}
+		defer netNS.Close()
+		return netNS.Do(func(_ ns.NetNS) error {
+
+			progs := []progDefinition{{progName: symbolFromEndpoint, direction: dirIngress}}
+
+			if ep.RequireEgressProg() {
+				progs = append(progs, progDefinition{progName: symbolToEndpoint, direction: dirEgress})
+			} else {
+				err := RemoveTCFilters(ep.InterfaceName(), netlink.HANDLE_MIN_EGRESS)
+				if err != nil {
+					log.WithField("device", ep.InterfaceName()).Error(err)
+				}
+			}
+
+			var finalize func()
+			if ep.NetNS() != "" {
+				finalize, err = replaceDatapath(ctx, ep.InterfaceName(), objPath, progs, "")
+				if err != nil {
+					scopedLog := ep.Logger(Subsystem).WithFields(logrus.Fields{
+						logfields.Path: objPath,
+						logfields.Veth: ep.InterfaceName(),
+					})
+					// Don't log an error here if the context was canceled or timed out;
+					// this log message should only represent failures with respect to
+					// loading the program.
+					if ctx.Err() == nil {
+						scopedLog.WithError(err).Warn("JoinEP: Failed to attach ingress program")
+					}
+					return err
+				}
+				defer finalize()
+			}
+			return nil
+		})
+		////////////////////////////////////////
+		/*progs := []progDefinition{{progName: symbolFromEndpoint, direction: dirIngress}}
 
 		if ep.RequireEgressProg() {
 			progs = append(progs, progDefinition{progName: symbolToEndpoint, direction: dirEgress})
@@ -347,7 +396,7 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 			}
 			return err
 		}
-		defer finalize()
+		defer finalize()*/
 	}
 
 	if ep.RequireEndpointRoute() {
