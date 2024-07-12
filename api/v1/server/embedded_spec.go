@@ -2676,6 +2676,10 @@ func init() {
           "description": "MAC address",
           "type": "string"
         },
+        "net-ns": {
+          "description": "Network Namespace",
+          "type": "string"
+        },
         "pid": {
           "description": "Process ID of the workload belonging to this endpoint",
           "type": "integer"
@@ -8030,6 +8034,10 @@ func init() {
         "labels": {
           "description": "Labels describing the identity",
           "$ref": "#/definitions/Labels"
+        },
+        "net-ns": {
+          "description": "Network Namespace",
+          "type": "string"
         },
         "mac": {
           "description": "MAC address",

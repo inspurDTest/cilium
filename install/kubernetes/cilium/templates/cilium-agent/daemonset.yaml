@@ -322,6 +322,9 @@ spec:
         - name: clustermesh-secrets
           mountPath: /var/lib/cilium/clustermesh
           readOnly: true
+        - name: netns
+          mountPath: /var/run/netns
+          mountPropagation: HostToContainer
         {{- if .Values.ipMasqAgent.enabled }}
         - name: ip-masq-agent
           mountPath: /etc/config
@@ -800,6 +803,10 @@ spec:
         hostPath:
           path: /run/xtables.lock
           type: FileOrCreate
+      - name: netns
+        hostPath:
+            path: /var/run/netns
+            type: DirectoryOrCreate
       {{- if .Values.authentication.mutual.spire.enabled }}
       - name: spire-agent-socket
         hostPath:
