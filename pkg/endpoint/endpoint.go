@@ -147,6 +147,9 @@ type Endpoint struct {
 	// connects into the endpoint
 	ifName string
 
+	// netNS is the network namespace of interface, veth doesn't need this
+	netNS string
+
 	// ifIndex is the interface index of the host face interface (veth pair)
 	ifIndex int
 

@@ -79,8 +79,8 @@ func (e *Endpoint) createEpInfoCache(epdir string) *epInfoCache {
 		options:                e.Options.DeepCopy(),
 		lxcMAC:                 e.mac,
 		ifIndex:                e.ifIndex,
-
-		endpoint: e,
+		netNs:                  e.netNS,
+		endpoint:               e,
 	}
 	return ep
 }

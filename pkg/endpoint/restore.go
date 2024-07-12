@@ -383,6 +383,7 @@ func (e *Endpoint) toSerializedEndpoint() *serializableEndpoint {
 		IfName:                e.ifName,
 		IfIndex:               e.ifIndex,
 		OpLabels:              e.OpLabels,
+		NetNS:                 e.netNS,
 		LXCMAC:                e.mac,
 		IPv6:                  e.IPv6,
 		IPv6IPAMPool:          e.IPv6IPAMPool,
@@ -496,6 +497,8 @@ type serializableEndpoint struct {
 	// This is used to avoid overwriting/deleting ciliumendpoints that are managed
 	// by other endpoints.
 	CiliumEndpointUID types.UID
+
+	NetNS string
 }
 
 // UnmarshalJSON expects that the contents of `raw` are a serializableEndpoint,
