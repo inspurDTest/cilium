@@ -43,6 +43,7 @@ type epInfoCache struct {
 	options                                *option.IntOptions
 	lxcMAC                                 mac.MAC
 	ifIndex                                int
+	netNs                                  string
 
 	// endpoint is used to get the endpoint's logger.
 	//
@@ -178,4 +179,7 @@ func (ep *epInfoCache) GetPolicyVerdictLogFilter() uint32 {
 
 func (ep *epInfoCache) IsHost() bool {
 	return ep.endpoint.IsHost()
+}
+func (ep *epInfoCache) NetNS() string {
+	return ep.netNs
 }
