@@ -316,8 +316,9 @@ func (l *Loader) reloadHostDatapath(ctx context.Context, ep datapath.Endpoint, o
 func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs *directoryInfo) error {
 	// Replace the current program
 	objPath := path.Join(dirs.Output, endpointObj)
-
+	fmt.Println("Enter reloadDatapath function #########")
 	if ep.IsHost() {
+		fmt.Println("Endpoint is host mod #########,ep interface name:%s", ep.InterfaceName())
 		objPath = path.Join(dirs.Output, hostEndpointObj)
 		if err := l.reloadHostDatapath(ctx, ep, objPath); err != nil {
 			return err
@@ -325,6 +326,7 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 	} else {
 		var netNS ns.NetNS
 		var err error
+		fmt.Println("net ns:%s #########", ep.NetNS())
 		if ep.NetNS() != "" {
 			netNS, err = ns.GetNS(ep.NetNS())
 			if err != nil {
@@ -352,6 +354,7 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 
 			var finalize func()
 			if ep.NetNS() != "" {
+				fmt.Println("ep netns is :%s #########", ep.NetNS())
 				finalize, err = replaceDatapath(ctx, ep.InterfaceName(), objPath, progs, "")
 				if err != nil {
 					scopedLog := ep.Logger(Subsystem).WithFields(logrus.Fields{
@@ -363,6 +366,23 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 					// loading the program.
 					if ctx.Err() == nil {
 						scopedLog.WithError(err).Warn("JoinEP: Failed to attach ingress program")
+					}
+					return err
+				}
+				defer finalize()
+			} else {
+				fmt.Println("ep netns is empty,go to original logic")
+				finalize, err := replaceDatapath(ctx, ep.InterfaceName(), objPath, progs, "")
+				if err != nil {
+					scopedLog := ep.Logger(Subsystem).WithFields(logrus.Fields{
+						logfields.Path: objPath,
+						logfields.Veth: ep.InterfaceName(),
+					})
+					// Don't log an error here if the context was canceled or timed out;
+					// this log message should only represent failures with respect to
+					// loading the program.
+					if ctx.Err() == nil {
+						scopedLog.WithError(err).Warn("JoinEP: Failed to attach program(s)")
 					}
 					return err
 				}
