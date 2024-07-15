@@ -53,7 +53,7 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 	logger.Debugf("Processing prevRes: %#v", prevRes)
 	logger.Debugf("interfaces length: %v", prevRes.Interfaces)
 	for _, item := range prevRes.Interfaces {
-		logger.Debugf("interface name: %v", item.Name)
+		logger.Debugf("interface name: %v,sandbox:%v,mac:%v", item.Name, item.Sandbox, item.Mac)
 	}
 	logger.Debugf("Processing pluginCtx.Args in generic-device: %#v", pluginCtx.Args)
 	n, err := types.LoadNetConf(pluginCtx.Args.StdinData)
