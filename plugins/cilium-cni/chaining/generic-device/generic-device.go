@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/cilium/cilium/pkg/logging"
 	"github.com/cilium/cilium/plugins/cilium-cni/lib"
+	"github.com/google/uuid"
 
 	"github.com/cilium/cilium/plugins/cilium-cni/types"
 	cniTypes "github.com/containernetworking/cni/pkg/types"
@@ -28,7 +30,13 @@ func (f *GenericDeviceChainer) ImplementsAdd() bool {
 	return true
 }
 
+var (
+	log = logging.DefaultLogger.WithField(logfields.LogSubsys, "cilium-generic-device")
+)
+
 func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.PluginContext, cli *client.Client) (res *cniTypesVer.Result, err error) {
+	logger := log.WithField("eventUUID", uuid.New())
+	logger.Debug("Enter Add on Generic-device")
 	err = cniVersion.ParsePrevResult(&pluginCtx.NetConf.NetConf)
 	if err != nil {
 		err = fmt.Errorf("unable to understand network config: %s", err)
@@ -41,7 +49,9 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 		err = fmt.Errorf("unable to get previous network result: %s", err)
 		return
 	}
-
+	logger.Debugf("This is a test message in generic-device,###############")
+	logger.Debugf("Processing prevRes: %#v", prevRes)
+	logger.Debugf("Processing pluginCtx.Args: %#v", pluginCtx.Args)
 	defer func() {
 		if err != nil {
 			pluginCtx.Logger.WithError(err).
@@ -64,6 +74,15 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 			break
 		}
 	}
+
+	netNS, err = ns.GetNS(pluginCtx.Args.Netns)
+	if err != nil {
+		err = fmt.Errorf("failed to open netns %q: %s", pluginCtx.Args.Netns, err)
+		return
+	}
+	defer netNS.Close()
+	logger.Debugf("Processing NetNs: %#v", netNS)
+
 	if deviceName == "" {
 		err = fmt.Errorf("unable to find interface in network namespace %v", pluginCtx.Args.Netns)
 		return
