@@ -107,10 +107,12 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 		for _, link := range links {
 			logger.Debugf("Link name :%s,mac:%s", link.Attrs().Name, link.Attrs().HardwareAddr.String())
 			if link.Attrs().Name != deviceName {
-				//continue
+				continue
 				logger.Debugf("Link %s is not the device we are looking for", link.Attrs().Name)
 			}
+			logger.Debugf("Link %s is the device we are looking for,mac :%s", link.Attrs().Name, link.Attrs().HardwareAddr.String())
 			deviceMac = link.Attrs().HardwareAddr.String()
+			logger.Debugf("Device Mac: %s", deviceMac)
 
 			addrs, err := netlink.AddrList(link, netlink.FAMILY_V4)
 			if err != nil {
