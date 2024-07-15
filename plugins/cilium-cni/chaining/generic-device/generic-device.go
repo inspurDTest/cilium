@@ -51,7 +51,17 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 	}
 	logger.Debugf("This is a test message in generic-device,###############")
 	logger.Debugf("Processing prevRes: %#v", prevRes)
-	logger.Debugf("Processing pluginCtx.Args: %#v", pluginCtx.Args)
+	logger.Debugf("interfaces length: %v", prevRes.Interfaces)
+	for _, item := range prevRes.Interfaces {
+		logger.Debugf("interface name: %v", item.Name)
+	}
+	logger.Debugf("Processing pluginCtx.Args in generic-device: %#v", pluginCtx.Args)
+	n, err := types.LoadNetConf(pluginCtx.Args.StdinData)
+	if err != nil {
+		logger.Debugf("Load args failed ")
+		return
+	}
+	logger.Debugf("Processing CNI NetConf in generic-device: %#v", n)
 	defer func() {
 		if err != nil {
 			pluginCtx.Logger.WithError(err).
@@ -97,6 +107,7 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 
 	if err = netNS.Do(func(_ ns.NetNS) error {
 		links, err := netlink.LinkList()
+		logger.Debugf("Links in NetNs: %#v", links)
 		if err != nil {
 			return fmt.Errorf("failed to list link %s", pluginCtx.Args.Netns)
 		}
@@ -162,7 +173,7 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 			RequireRouting:        &disabled,
 		},
 	}
-
+	logger.Debugf("Endpoint %s: %+v", ep.ContainerID, ep)
 	err = cli.EndpointCreate(ep)
 	if err != nil {
 		pluginCtx.Logger.WithError(err).WithFields(logrus.Fields{
