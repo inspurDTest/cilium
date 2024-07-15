@@ -85,17 +85,10 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 		}
 	}
 
-	netNS, err = ns.GetNS(pluginCtx.Args.Netns)
-	if err != nil {
-		err = fmt.Errorf("failed to open netns %q: %s", pluginCtx.Args.Netns, err)
-		return
-	}
-	defer netNS.Close()
-	logger.Debugf("Processing NetNs: %#v", netNS)
-
 	if deviceName == "" {
 		err = fmt.Errorf("unable to find interface in network namespace %v", pluginCtx.Args.Netns)
-		return
+		deviceName = "eth0"
+		//return
 	}
 
 	netNS, err = ns.GetNS(pluginCtx.Args.Netns)
@@ -112,8 +105,10 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 			return fmt.Errorf("failed to list link %s", pluginCtx.Args.Netns)
 		}
 		for _, link := range links {
+			logger.Debugf("Link name :%s,mac:%s", link.Attrs().Name, link.Attrs().HardwareAddr.String())
 			if link.Attrs().Name != deviceName {
-				continue
+				//continue
+				logger.Debugf("Link %s is not the device we are looking for", link.Attrs().Name)
 			}
 			deviceMac = link.Attrs().HardwareAddr.String()
 
