@@ -357,15 +357,15 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 			var finalize func()
 			if ep.NetNS() != "" {
 				progsEx := []progDefinition{{progName: symbolFromEndpoint, direction: dirEgress}}
-
-				if ep.RequireEgressProg() {
-					progsEx = append(progsEx, progDefinition{progName: symbolToEndpoint, direction: dirIngress})
-				} else {
-					err := RemoveTCFilters(ep.InterfaceName(), netlink.HANDLE_MIN_EGRESS)
-					if err != nil {
-						log.WithField("device", ep.InterfaceName()).Error(err)
-					}
-				}
+				/*
+					if ep.RequireEgressProg() {
+						progsEx = append(progsEx, progDefinition{progName: symbolToEndpoint, direction: dirIngress})
+					} else {
+						err := RemoveTCFilters(ep.InterfaceName(), netlink.HANDLE_MIN_EGRESS)
+						if err != nil {
+							log.WithField("device", ep.InterfaceName()).Error(err)
+						}
+					}*/
 
 				fmt.Println("ep netns is :%s #########", ep.NetNS())
 				finalize, err = replaceDatapath(ctx, ep.InterfaceName(), objPath, progsEx, "")
