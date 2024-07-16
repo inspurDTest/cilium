@@ -7,6 +7,7 @@ import (
 	"github.com/cilium/cilium/pkg/logging"
 	"github.com/cilium/cilium/plugins/cilium-cni/lib"
 	"github.com/google/uuid"
+	"strings"
 
 	"github.com/cilium/cilium/plugins/cilium-cni/types"
 	cniTypes "github.com/containernetworking/cni/pkg/types"
@@ -147,16 +148,17 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 		err = errors.New("unable to determine device IP address")
 		return
 	}
-
+	netNsStr := strings.Replace(pluginCtx.Args.Netns, "/proc", "/var/run/netns", -1)
 	var disabled = false
 	ep := &models.EndpointChangeRequest{
 		Addressing: &models.AddressPair{
 			IPV4: deviceIP,
 			IPV6: deviceIPv6,
 		},
-		ContainerID:       pluginCtx.Args.ContainerID,
-		State:             models.EndpointStateWaitingDashForDashIdentity.Pointer(),
-		NetNs:             pluginCtx.Args.Netns,
+		ContainerID: pluginCtx.Args.ContainerID,
+		State:       models.EndpointStateWaitingDashForDashIdentity.Pointer(),
+		//NetNs:             pluginCtx.Args.Netns,
+		NetNs:             netNsStr,
 		Mac:               deviceMac,
 		HostMac:           deviceMac,
 		InterfaceName:     deviceName,

@@ -330,11 +330,13 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 		if ep.NetNS() != "" {
 			netNS, err = ns.GetNS(ep.NetNS())
 			if err != nil {
+				fmt.Printf("#####&&&&&Failed to open netns %q: %s", ep.NetNS(), err)
 				return fmt.Errorf("failed to open netns %q: %s", ep.NetNS(), err)
 			}
 		} else {
 			netNS, err = ns.GetCurrentNS()
 			if err != nil {
+				fmt.Printf("failed to open current netns: %s", err)
 				return fmt.Errorf("failed to open current netns: %s", err)
 			}
 		}
@@ -521,6 +523,7 @@ func (l *Loader) CompileAndLoad(ctx context.Context, ep datapath.Endpoint, stats
 // invocations will be released.
 func (l *Loader) CompileOrLoad(ctx context.Context, ep datapath.Endpoint, stats *metrics.SpanStat) error {
 	templatePath, _, err := l.templateCache.fetchOrCompile(ctx, ep, stats)
+	fmt.Println("#######templatePath:", templatePath)
 	if err != nil {
 		return err
 	}
