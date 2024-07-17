@@ -1483,11 +1483,12 @@ func CheckHealth(ep *Endpoint) error {
 		})
 		return nil
 	}
+	var err error
 	if ep.netNS != "" {
 		fmt.Println("#####endpoint.go: CheckHealth: ep.netNS :%s,iface:%s", ep.netNS, iface)
 	} else {
 		fmt.Println("#####endpoint.go: CheckHealth: ep.netNS is empty")
-		_, err := netlink.LinkByName(iface)
+		_, err = netlink.LinkByName(iface)
 		if _, ok := err.(netlink.LinkNotFoundError); ok {
 			return fmt.Errorf("Endpoint is invalid: %w", err)
 		}
