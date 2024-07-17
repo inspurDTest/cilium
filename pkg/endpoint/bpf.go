@@ -1483,10 +1483,16 @@ func CheckHealth(ep *Endpoint) error {
 		})
 		return nil
 	}
-	_, err := netlink.LinkByName(iface)
-	if _, ok := err.(netlink.LinkNotFoundError); ok {
-		return fmt.Errorf("Endpoint is invalid: %w", err)
+	if ep.netNS != "" {
+		fmt.Println("#####endpoint.go: CheckHealth: ep.netNS :%s,iface:%s", ep.netNS, iface)
+	} else {
+		fmt.Println("#####endpoint.go: CheckHealth: ep.netNS is empty")
+		_, err := netlink.LinkByName(iface)
+		if _, ok := err.(netlink.LinkNotFoundError); ok {
+			return fmt.Errorf("Endpoint is invalid: %w", err)
+		}
 	}
+
 	if err != nil {
 		log.WithError(err).WithFields(logrus.Fields{
 			logfields.EndpointID:  ep.StringID(),
