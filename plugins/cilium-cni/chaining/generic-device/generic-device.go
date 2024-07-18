@@ -139,14 +139,11 @@ func (f *GenericDeviceChainer) Add(ctx context.Context, pluginCtx chainingapi.Pl
 	}); err != nil {
 		return
 	}
-	/*if deviceIP == "" {
-		deviceIP = n.Type
-	}*/
 	switch {
 	case deviceMac == "":
 		err = errors.New("unable to determine device MAC address")
 		return
-	case deviceIP == "" && deviceIPv6 == "" && 1 != 1:
+	case deviceIP == "" && deviceIPv6 == "":
 		err = errors.New("unable to determine device IP address")
 		return
 	}
