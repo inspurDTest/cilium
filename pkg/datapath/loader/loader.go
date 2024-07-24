@@ -356,9 +356,9 @@ func (l *Loader) reloadDatapath(ctx context.Context, ep datapath.Endpoint, dirs 
 
 			var finalize func()
 			if ep.NetNS() != "" {
-				progsEx := []progDefinition{{progName: symbolFromEndpoint, direction: dirEgress}}
+				//progsEx := []progDefinition{{progName: symbolFromEndpoint, direction: dirEgress}}
 				//只保留ingress方向时可用，只是在入方向使网络策略生效
-				progsEx = []progDefinition{{progName: symbolToEndpoint, direction: dirIngress}}
+				progsEx := []progDefinition{{progName: symbolToEndpoint, direction: dirIngress}}
 				/*
 					if ep.RequireEgressProg() {
 						progsEx = append(progsEx, progDefinition{progName: symbolToEndpoint, direction: dirIngress})
