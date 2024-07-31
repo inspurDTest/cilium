@@ -98,9 +98,10 @@ func retrieveNodeInformation(ctx context.Context, nodeGetter k8sGetter, nodeName
 		log.WithField(logfields.NodeName, n.Name).Info("Retrieved node information from kubernetes node")
 	}
 
-	if requireIPv4CIDR && n.IPv4AllocCIDR == nil {
-		return nil, fmt.Errorf("required IPv4 PodCIDR not available")
-	}
+	/*
+		if requireIPv4CIDR && n.IPv4AllocCIDR == nil {
+			return nil, fmt.Errorf("required IPv4 PodCIDR not available")
+		}*/
 
 	if requireIPv6CIDR && n.IPv6AllocCIDR == nil {
 		return nil, fmt.Errorf("required IPv6 PodCIDR not available")
