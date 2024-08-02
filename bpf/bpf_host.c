@@ -1347,6 +1347,7 @@ int cil_from_netdev(struct __ctx_buff *ctx)
 	/* Filter allowed vlan id's and pass them back to kernel.
 	 * We will see the packet again in from-netdev@eth0.vlanXXX.
 	 */
+	 
 	/*if (ctx->vlan_present) {
 		__u32 vlan_id = ctx->vlan_tci & 0xfff;
 
