@@ -1343,8 +1343,8 @@ int cil_from_netdev(struct __ctx_buff *ctx)
 #ifdef ENABLE_NODEPORT_ACCELERATION
 	__u32 flags = ctx_get_xfer(ctx, XFER_FLAGS);
 #endif
-	//int ret;
-
+	int ret;
+    ret=0;
 
 	/* Filter allowed vlan id's and pass them back to kernel.
 	 * We will see the packet again in from-netdev@eth0.vlanXXX.
@@ -1370,13 +1370,12 @@ int cil_from_netdev(struct __ctx_buff *ctx)
 
 #ifdef HAVE_ENCAP
 	if (flags & XFER_PKT_SNAT_DONE)
-	
+
 		ctx_snat_done_set(ctx);
 #endif
 #endif
 
 #ifdef ENABLE_HIGH_SCALE_IPCACHE
-    int ret;
 	ret = decapsulate_overlay(ctx, &src_id);
 	if (IS_ERR(ret))
 		return send_drop_notify_error(ctx, src_id, ret, CTX_ACT_DROP,
