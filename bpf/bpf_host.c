@@ -1342,7 +1342,6 @@ int cil_from_netdev(struct __ctx_buff *ctx)
 
 #ifdef ENABLE_NODEPORT_ACCELERATION
 	__u32 flags = ctx_get_xfer(ctx, XFER_FLAGS);
-	
 #endif
 	//int ret;
 
