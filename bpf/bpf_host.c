@@ -1343,11 +1343,12 @@ int cil_from_netdev(struct __ctx_buff *ctx)
 	__u32 flags = ctx_get_xfer(ctx, XFER_FLAGS);
 #endif
 	int ret;
+	
 
 	/* Filter allowed vlan id's and pass them back to kernel.
 	 * We will see the packet again in from-netdev@eth0.vlanXXX.
 	 */
-	 
+
 	/*if (ctx->vlan_present) {
 		__u32 vlan_id = ctx->vlan_tci & 0xfff;
 
