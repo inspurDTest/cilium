@@ -1422,6 +1422,7 @@ int cil_to_netdev(struct __ctx_buff *ctx __maybe_unused)
 
 	/* Filter allowed vlan id's and pass them back to kernel.
 	 */
+	 /*
 	if (ctx->vlan_present) {
 		vlan_id = ctx->vlan_tci & 0xfff;
 		if (vlan_id) {
@@ -1431,7 +1432,7 @@ int cil_to_netdev(struct __ctx_buff *ctx __maybe_unused)
 				return send_drop_notify_error(ctx, 0, DROP_VLAN_FILTERED,
 							      CTX_ACT_DROP, METRIC_EGRESS);
 		}
-	}
+	}*/
 
 #if defined(ENABLE_L7_LB)
 	{
