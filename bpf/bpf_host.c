@@ -1370,6 +1370,7 @@ int cil_from_netdev(struct __ctx_buff *ctx)
 
 #ifdef HAVE_ENCAP
 	if (flags & XFER_PKT_SNAT_DONE)
+	
 		ctx_snat_done_set(ctx);
 #endif
 #endif
